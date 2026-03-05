@@ -1,6 +1,7 @@
 """This module provide analysis tools to apply on a parse file."""
 
 from datetime import datetime, timedelta
+from collections import Counter
 
 class Analyzer:
 
@@ -23,3 +24,8 @@ class Analyzer:
             "duration": max(dates_formatted) - min(dates_formatted),
         }
     
+    def top_ip(self, n: int=10) -> list[tuple[str | None, int]]:
+        """Method to obtain top n IP in log file"""
+        ip = [log.get("ip") for log in self.logs] # Extract IP of list of logs
+        counter = Counter(ip) # Define an IP counter
+        return counter.most_common(n) # Return the n most common IP
