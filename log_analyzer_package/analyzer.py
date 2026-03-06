@@ -1,5 +1,7 @@
 """This module provide analysis tools to apply on a parse file."""
 
+import re
+
 from datetime import datetime, timedelta
 from collections import Counter
 
@@ -25,7 +27,7 @@ class Analyzer:
         }
     
     def top_ip(self, n: int=10) -> list[tuple[str | None, int]]:
-        """Method to obtain top n IP in log file"""
+        """Method to obtain top n IP in the log file"""
         ip = [log.get("ip") for log in self.logs] # Extract IP of list of logs
         counter = Counter(ip) # Define an IP counter
         return counter.most_common(n) # Return the n most common IP
@@ -35,3 +37,15 @@ class Analyzer:
         status = [log.get("status") for log in self.logs] # Extract status code
         counter = Counter(status) # Define a status code counter
         return counter.most_common() # Return the counter
+    
+    def top_endpoint(self, n: int=10) -> list[tuple[str | None, int]]:
+        """Method to obtain top n endpoints in the log file"""
+        regex = r'/\S+' # Define regex to match endpoint in request
+        endpoints = []
+        for log in self.logs:
+            endpoint = re.search(regex, log.get("req", ""))
+            if endpoint:
+                endpoints.append(endpoint.group())
+
+        counter = Counter(endpoints) # Define endpoints counter
+        return counter.most_common(n) # Return top n endpoints
