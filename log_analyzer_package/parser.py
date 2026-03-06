@@ -43,6 +43,8 @@ class Parser():
                     item["request"] = log.group("req")
                     item["status"] = log.group("status")
                     item["size"] = log.group("size")
+                    item["referer"] = log.group("referer")
+                    item["agent"] = log.group("agent")
                     logs.append(item)
             return logs
 
