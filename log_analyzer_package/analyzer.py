@@ -29,3 +29,9 @@ class Analyzer:
         ip = [log.get("ip") for log in self.logs] # Extract IP of list of logs
         counter = Counter(ip) # Define an IP counter
         return counter.most_common(n) # Return the n most common IP
+    
+    def counter_status(self) -> list[tuple[str | None, int]]:
+        """Method to count status code distribution"""
+        status = [log.get("status") for log in self.logs] # Extract status code
+        counter = Counter(status) # Define a status code counter
+        return counter.most_common() # Return the counter
