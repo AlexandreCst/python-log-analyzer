@@ -58,6 +58,12 @@ class Analyzer:
         """Method to get the server load"""
         size = [int(log.get("size", 0)) for log in self.logs] # Get log size
         return sum(size)
+    
+    def top_agent(self, n: int=3) -> list[tuple[str | None, int]]:
+        """Method to get the top n user_agent"""
+        user_agent = [log.get("agent") for log in self.logs] # Get user agent
+        counter = Counter(user_agent) # user agent counter
+        return counter.most_common(n)
 
 
 
