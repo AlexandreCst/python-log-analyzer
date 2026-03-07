@@ -17,13 +17,11 @@ class Analyzer:
     
     def date_range(self) -> dict[str, datetime | timedelta]:
         """Method to return the date range of the log file"""
-        format = "%d/%b/%Y:%H:%M:%S %z" # Define date format
-        dates = [log.get("date", "").strip('[]') for log in self.logs] # Put the dates without the []
-        dates_formatted = [datetime.strptime(date, format) for date in dates] # String dates to datetime type
+        dates = self._parse_dates()
         return {
-            "start": min(dates_formatted),
-            "end": max(dates_formatted),
-            "duration": max(dates_formatted) - min(dates_formatted),
+            "start": min(dates),
+            "end": max(dates),
+            "duration": max(dates) - min(dates),
         }
     
     def top_ip(self, n: int=10) -> list[tuple[str | None, int]]:
@@ -49,3 +47,18 @@ class Analyzer:
 
         counter = Counter(endpoints) # Define endpoints counter
         return counter.most_common(n) # Return top n endpoints
+    
+    def traffic_by_hour(self) -> list[tuple]:
+        """Method to get traffic by hour"""
+        hours = [date.hour for date in self._parse_dates()] # String dates to datetime type
+        counter = Counter(hours) # Traffic counter by hour
+        return counter.most_common()
+    
+
+
+
+    def _parse_dates(self):
+        format = format = "%d/%b/%Y:%H:%M:%S %z" # Define date format
+        dates = [log.get("date", "").strip('[]') for log in self.logs] # Get the dates without the []
+        dates_formatted = [datetime.strptime(date, format) for date in dates] # String dates to datetime type
+        return dates_formatted
