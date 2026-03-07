@@ -54,6 +54,10 @@ class Analyzer:
         counter = Counter(hours) # Traffic counter by hour
         return counter.most_common()
     
+    def server_load(self) -> int:
+        """Method to get the server load"""
+        size = [int(log.get("size", 0)) for log in self.logs] # Get log size
+        return sum(size)
 
 
 
