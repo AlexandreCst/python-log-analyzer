@@ -1,4 +1,4 @@
-"""This module provide analysis tools to apply on a parse file."""
+"""This module provide analysis tools to apply on a parse log file."""
 
 import re
 
