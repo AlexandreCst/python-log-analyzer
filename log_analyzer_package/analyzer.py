@@ -6,11 +6,15 @@ from datetime import datetime, timedelta
 from collections import Counter
 
 class Analyzer:
+    """Define statistics to apply on the log file."""
 
+    # Attributes initialization
     def __init__(self, logs: list[dict[str, str]]) -> None:
         """Initilisation of class attributes"""
         self.logs = logs
 
+
+    # Statistic methods
     def requests_number(self) -> int:
         """Method to return the numbers of requests"""
         return len(self.logs)
@@ -64,9 +68,21 @@ class Analyzer:
         user_agent = [log.get("agent") for log in self.logs] # Get user agent
         counter = Counter(user_agent) # user agent counter
         return counter.most_common(n)
+    
+    def errors_ip(self) -> list[tuple[tuple[str, str], int]]:
+        """Method to get suspects IPs with an error code (4xx or 5xx)"""
+        ips_status = []
+        for log in self.logs:
+            ip = log.get("ip", 0) # Get Ips
+            status = int(log.get("status", 0)) # Get status code
+            if ip and status >= 400:
+                ips_status.append((ip, str(status)))
+
+        counter = Counter(ips_status) # Counter the occurences of pair (ip, status code)
+        return counter.most_common()
 
 
-
+    # Private method
     def _parse_dates(self):
         format = format = "%d/%b/%Y:%H:%M:%S %z" # Define date format
         dates = [log.get("date", "").strip('[]') for log in self.logs] # Get the dates without the []
