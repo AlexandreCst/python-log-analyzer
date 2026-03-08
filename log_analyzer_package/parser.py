@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 
 
-class Parser():
+class Parser:
     """Definition of class to parse a log file."""
 
     def __init__(self, path) -> None:
@@ -46,5 +46,5 @@ class Parser():
                     item["referer"] = log.group("referer")
                     item["agent"] = log.group("agent")
                     logs.append(item)
-            return logs
+        return logs
 

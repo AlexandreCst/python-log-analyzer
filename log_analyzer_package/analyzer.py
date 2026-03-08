@@ -45,7 +45,7 @@ class Analyzer:
         regex = r'/\S+' # Define regex to match endpoint in request
         endpoints = []
         for log in self.logs:
-            endpoint = re.search(regex, log.get("req", ""))
+            endpoint = re.search(regex, log.get("request", ""))
             if endpoint:
                 endpoints.append(endpoint.group())
 
