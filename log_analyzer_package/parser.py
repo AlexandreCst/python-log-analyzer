@@ -44,7 +44,7 @@ class Parser:
                     item["status"] = log.group("status")
                     item["size"] = log.group("size")
                     item["referer"] = log.group("referer")
-                    item["agent"] = log.group("agent")
+                    item["agent"] = log.group("agent").strip('"')
                     logs.append(item)
         return logs
 
