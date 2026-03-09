@@ -2,3 +2,7 @@ from log_analyzer_package.parser import Parser
 from log_analyzer_package.analyzer import Analyzer
 from log_analyzer_package.reporter import Reporter
 
+from log_analyzer_package.exceptions import LogFileNotFoundError
+from log_analyzer_package.exceptions import EmptyFileError
+from log_analyzer_package.exceptions import FileWrittingError
+from log_analyzer_package.exceptions import AnalyzerMissingError
