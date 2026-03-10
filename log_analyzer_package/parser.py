@@ -1,10 +1,12 @@
 """Parser module."""
 
 import re
+import logging
 
 from pathlib import Path
 from log_analyzer_package.exceptions import LogFileNotFoundError, EmptyFileError
 
+logger = logging.getLogger(__name__)
 
 class Parser:
     """Definition of class to parse a log file."""
@@ -50,9 +52,12 @@ class Parser:
                         logs.append(item)
 
                 if not logs:
+                    logger.error("Empty file log")
                     raise EmptyFileError("The log file to parse is empty.")
+                logger.debug("File log parsing success!")
 
         except FileNotFoundError as e:
+            logger.error("File not found")
             raise LogFileNotFoundError(f"Error: {e}")
         
         return logs
