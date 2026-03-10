@@ -1,11 +1,14 @@
 """Module to shape the statitics apply on a log file"""
 
 import json
+import logging
 
 from pathlib import Path
 
 from log_analyzer_package.analyzer import Analyzer
 from log_analyzer_package.exceptions import FileWrittingError
+
+logger = logging.getLogger(__name__)
 
 class Reporter:
 
@@ -21,6 +24,7 @@ class Reporter:
         print("LOG FILE STATISTICS".center(80, "="))
         print(self._build_report()) # Display log file statistics
         print("END".center(80, "="))
+        logger.debug("Print terminal report success!")
 
     def save_report(self, path="report", format="txt"):
         """Method to savec the report in a text file or in a JSON"""
@@ -30,12 +34,15 @@ class Reporter:
             if format.lower().strip() == "txt": # Create a text file
                 with path.open(mode="w") as file_txt:
                     file_txt.write(self._build_report())
+                logger.debug("Report text file generated!")
                 
             elif format.lower().strip() == "json":
                 with path.open(mode="w") as file_json: # creat a JSON file
                     json.dump(self._build_json_report(), file_json, indent=2)
+                logger.debug("Report JSON file generated!")
                 
         except (PermissionError, OSError):
+                logger.error("Report cannot be generated")
                 raise FileWrittingError("Report writing impossible.")    
 
     # Private method
