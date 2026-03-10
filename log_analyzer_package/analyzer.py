@@ -1,10 +1,14 @@
 """This module provide analysis tools to apply on a parse log file."""
 
 import re
+import logging
 
 from datetime import datetime, timedelta
 from collections import Counter
 from log_analyzer_package.exceptions import AnalyzerMissingError
+
+logger = logging.getLogger(__name__)
+
 class Analyzer:
     """Define statistics to apply on the log file."""
 
@@ -13,17 +17,20 @@ class Analyzer:
         """Initilisation of class attributes"""
         self.logs = logs
         if not self.logs: # Check whether log doesn't contain any data
+            logger.error("No data log available")
             raise AnalyzerMissingError("No data found.")
 
 
     # Statistic methods
     def requests_number(self) -> int:
         """Method to return the numbers of requests"""
+        logger.debug("List of logs not empty")
         return len(self.logs)
     
     def date_range(self) -> dict[str, datetime | timedelta]:
         """Method to return the date range of the log file"""
         dates = self._parse_dates()
+        logger.debug("Start, end and duration are OK!")
         return {
             "start": min(dates),
             "end": max(dates),
@@ -34,12 +41,14 @@ class Analyzer:
         """Method to obtain top n IP in the log file"""
         ip = [log.get("ip") for log in self.logs] # Extract IP of list of logs
         counter = Counter(ip) # Define an IP counter
+        logger.debug("Top IPs is OK!")
         return counter.most_common(n) # Return the n most common IP
     
     def counter_status(self) -> list[tuple[str | None, int]]:
         """Method to count status code distribution"""
         status = [log.get("status") for log in self.logs] # Extract status code
         counter = Counter(status) # Define a status code counter
+        logger.debug("Status code counter is OK!")
         return counter.most_common() # Return the counter
     
     def top_endpoint(self, n: int=10) -> list[tuple[str | None, int]]:
@@ -52,23 +61,27 @@ class Analyzer:
                 endpoints.append(endpoint.group())
 
         counter = Counter(endpoints) # Define endpoints counter
+        logger.debug("Top endpoints is OK!")
         return counter.most_common(n) # Return top n endpoints
     
     def traffic_by_hour(self) -> list[tuple]:
         """Method to get traffic by hour"""
         hours = [date.hour for date in self._parse_dates()] # String dates to datetime type
         counter = Counter(hours) # Traffic counter by hour
+        logger.debug("Traffic by hour is OK!")
         return counter.most_common()
     
     def server_load(self) -> int:
         """Method to get the server load"""
         size = [int(log.get("size", 0)) for log in self.logs] # Get log size
+        logger.debug("Server load is available!")
         return sum(size)
     
     def top_agent(self, n: int=3) -> list[tuple[str | None, int]]:
         """Method to get the top n user_agent"""
         user_agent = [log.get("agent") for log in self.logs] # Get user agent
         counter = Counter(user_agent) # user agent counter
+        logger.debug("Top user-agent is OK!")
         return counter.most_common(n)
     
     def errors_ip(self) -> list[tuple[tuple[str, str], int]]:
@@ -81,6 +94,7 @@ class Analyzer:
                 ips_status.append((ip, str(status)))
 
         counter = Counter(ips_status) # Counter the occurences of pair (ip, status code)
+        logger.debug("Errors IPs are available!")
         return counter.most_common()
 
 
