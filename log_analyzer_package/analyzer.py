@@ -4,7 +4,7 @@ import re
 
 from datetime import datetime, timedelta
 from collections import Counter
-
+from log_analyzer_package.exceptions import AnalyzerMissingError
 class Analyzer:
     """Define statistics to apply on the log file."""
 
@@ -12,6 +12,8 @@ class Analyzer:
     def __init__(self, logs: list[dict[str, str]]) -> None:
         """Initilisation of class attributes"""
         self.logs = logs
+        if not self.logs: # Check whether log doesn't contain any data
+            raise AnalyzerMissingError("No data found.")
 
 
     # Statistic methods
