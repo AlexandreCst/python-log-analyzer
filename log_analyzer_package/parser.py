@@ -3,6 +3,7 @@
 import re
 
 from pathlib import Path
+from log_analyzer_package.exceptions import LogFileNotFoundError, EmptyFileError
 
 
 class Parser:
@@ -30,21 +31,29 @@ class Parser:
         
         path = Path(self.path)
 
-        with path.open(mode='r') as log_file:
-            logs = []
-            for line in log_file:
-                item = {}
-                log = re.search(regex, line, re.VERBOSE)
-                if log:
-                    item["ip"] = log.group("ip")
-                    item["id"] = log.group("id")
-                    item["username"] = log.group("username")
-                    item["date"] = log.group("date")
-                    item["request"] = log.group("req")
-                    item["status"] = log.group("status")
-                    item["size"] = log.group("size")
-                    item["referer"] = log.group("referer")
-                    item["agent"] = log.group("agent").strip('"')
-                    logs.append(item)
+        try:
+            with path.open(mode='r') as log_file:
+                logs = []
+                for line in log_file:
+                    item = {}
+                    log = re.search(regex, line, re.VERBOSE)
+                    if log:
+                        item["ip"] = log.group("ip")
+                        item["id"] = log.group("id")
+                        item["username"] = log.group("username")
+                        item["date"] = log.group("date")
+                        item["request"] = log.group("req")
+                        item["status"] = log.group("status")
+                        item["size"] = log.group("size")
+                        item["referer"] = log.group("referer")
+                        item["agent"] = log.group("agent").strip('"')
+                        logs.append(item)
+
+                if not logs:
+                    raise EmptyFileError("The log file to parse is empty.")
+
+        except FileNotFoundError as e:
+            raise LogFileNotFoundError(f"Error: {e}")
+        
         return logs
 
